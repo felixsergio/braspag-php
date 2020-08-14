@@ -1,0 +1,28 @@
+{
+    "name": "felixsergio/braspag-php",
+    "description": "Library PHP to integrate with Braspag MarketPlace",
+    "type": "library",
+    "keywords": ["loggi"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sergio Felix",
+            "email": "sergiofelix16@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "FelixBraspag\\": "src/",
+            "FelixBraspag\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.1",
+        "guzzlehttp/guzzle": "^6.3",
+        "developercielo/api-3.0-php": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5"
+    },
+    "minimum-stability": "dev"
+}
