@@ -5,7 +5,7 @@ namespace FelixBraspag\Marketplace\SplitPayment\Cielo;
 
 use Cielo\API30\Ecommerce\CieloSerializable;
 
-class SplitPayment implements \JsonSerializable, CieloSerializable
+class VoidSplitPayment implements \JsonSerializable, CieloSerializable
 {
     /**
      * @var string $subordinateMerchantId
@@ -13,23 +13,16 @@ class SplitPayment implements \JsonSerializable, CieloSerializable
     private $subordinateMerchantId;
 
     /**
-     * @var integer $amount
+     * @var integer $voidedAmount
      */
-    private $amount;
-
-    /**
-     * @var string $fare
-     */
-    private $fares;
+    private $voidedAmount;
 
     /**
      * SplitPayment constructor.
      */
     public function __construct()
     {
-        $this->fares = new \stdClass();
-        $this->fares->mdr = null;
-        $this->fares->fee = null;
+
     }
 
     /**
@@ -40,7 +33,7 @@ class SplitPayment implements \JsonSerializable, CieloSerializable
     public static function fromJson($json)
     {
         $object    = \json_decode($json);
-        $splitPayment = new SplitPayment();
+        $splitPayment = new VoidSplitPayment();
         $splitPayment->populate($object);
 
         return $splitPayment;
@@ -52,9 +45,7 @@ class SplitPayment implements \JsonSerializable, CieloSerializable
     public function populate(\stdClass $data)
     {
         $this->subordinateMerchantId    = $data->subordinateMerchantId ?? null;
-        $this->amount                   = $data->amount ?? null;
-        $this->fares->mdr               = $data->fares->mdr ?? null;
-        $this->fares->fee               = $data->fares->fee ?? null;
+        $this->voidedAmount                   = $data->amount ?? null;
     }
 
     /**
@@ -92,7 +83,7 @@ class SplitPayment implements \JsonSerializable, CieloSerializable
     /**
      * @return mixed
      */
-    public function getAmount()
+    public function getVoidedAmount()
     {
         return $this->amount ?? null;
     }
@@ -102,49 +93,9 @@ class SplitPayment implements \JsonSerializable, CieloSerializable
      *
      * @return $this
      */
-    public function setAmount($amount)
+    public function setVoidedAmount($voidedAmount)
     {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFareMdr()
-    {
-        return $this->fares->mdr ?? null;
-    }
-
-    /**
-     * @param $fareMdr
-     *
-     * @return $this
-     */
-    public function setFareMdr($fareMdr)
-    {
-        $this->fares->mdr = $fareMdr;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFareFee()
-    {
-        return $this->fares->fee ?? null;
-    }
-
-    /**
-     * @param $fareFee
-     *
-     * @return $this
-     */
-    public function setFareFee($fareFee)
-    {
-        $this->fares->fee = $fareFee;
+        $this->voidedAmount = $voidedAmount;
 
         return $this;
     }

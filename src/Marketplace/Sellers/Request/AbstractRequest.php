@@ -1,6 +1,6 @@
 <?php
 
-namespace FelixBraspag\Marketplace\SplitPayment\Cielo\Request;
+namespace FelixBraspag\Marketplace\Sellers\Request;
 
 use Cielo\API30\Ecommerce\Request\CieloError;
 use Cielo\API30\Ecommerce\Request\CieloRequestException;
@@ -8,9 +8,8 @@ use FelixBraspag\Marketplace\Authentication;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class AbstractSaleRequest
+ * Class AbstractRequest
  *
- * @package Cielo\API30\Ecommerce\Request
  */
 abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRequest
 {
@@ -42,12 +41,11 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
      */
     protected function sendRequest($method, $url, \JsonSerializable $content = null)
     {
-
         $headers = [
             'Accept: application/json',
             'Accept-Encoding: gzip',
             'User-Agent: Felix Braspag / PHP SDK',
-            'Authorization: ' . $this->auth->getTokenType() . ' ' . $this->auth->getAccessToken(),
+            'Authorization: ' . ucfirst($this->auth->getTokenType()) . ' ' . $this->auth->getAccessToken(),
             'RequestId: ' . uniqid()
         ];
 
@@ -81,7 +79,7 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
             $this->logger->debug('Requisição', [
                     sprintf('%s %s', $method, $url),
                     $headers,
-                    json_decode(preg_replace('/("cardnumber"):"([^"]{6})[^"]+([^"]{4})"/i', '$1:"$2******$3"', json_encode($content)))
+                    json_decode($content)
                 ]
             );
         }
@@ -106,12 +104,6 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
 
         curl_close($curl);
 
-        if($method == 'PUT') {
-            header('Content-Type: application/json');
-            echo $response;
-            exit;
-        }
-
         return $this->readResponse($statusCode, $response);
     }
 
@@ -125,11 +117,13 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
      */
     protected function readResponse($statusCode, $responseBody)
     {
+
         $unserialized = null;
 
         switch ($statusCode) {
             case 200:
             case 201:
+            case 202:
                 $unserialized = $this->unserialize($responseBody);
                 break;
             case 400:

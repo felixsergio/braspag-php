@@ -4,6 +4,7 @@
 namespace FelixBraspag\Marketplace\SplitPayment\Cielo;
 
 use FelixBraspag\Marketplace\SplitPayment\Cielo\SplitPayment;
+use FelixBraspag\Marketplace\SplitPayment\Cielo\PaymentFraudAnalysis;
 use Cielo\API30\Ecommerce\Payment as PaymentCielo;
 use Cielo\API30\Ecommerce\CreditCard as CreditCardCielo;
 
@@ -19,12 +20,18 @@ class Payment extends PaymentCielo
     private $splitPayments;
 
     /**
+     * @var array $fraudAnalysis
+     */
+    private $fraudAnalysis;
+
+    /**
      * @return array
      */
     public function jsonSerialize()
     {
         $obj = parent::jsonSerialize();
         $obj['splitPayments'] = $this->splitPayments;
+        $obj['fraudAnalysis'] = $this->fraudAnalysis;
 
         return $obj;
     }
@@ -37,8 +44,13 @@ class Payment extends PaymentCielo
         $this->populate($data);
 
         if (isset($data->SplitPayments)) {
-            $this->splitPayments = new SplitPayment(false);
+            $this->splitPayments = new SplitPayment();
             $this->splitPayments->populate($data->SplitPayments);
+        }
+
+        if (isset($data->fraudAnalysis)) {
+            $this->fraudAnalysis = new PaymentFraudAnalysis();
+            $this->fraudAnalysis->populate($data->fraudAnalysis);
         }
     }
 
@@ -105,6 +117,24 @@ class Payment extends PaymentCielo
     public function putSplitPayment(SplitPayment $splitPayments)
     {
         $this->splitPayments[] = $splitPayments;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFraudAnalysis()
+    {
+        return $this->fraudAnalysis;
+    }
+
+    /**
+     * @return PaymentFraudAnalysis $fraudAnalysis
+     */
+    public function setFraudAnalysis(PaymentFraudAnalysis $fraudAnalysis)
+    {
+       $this->fraudAnalysis = $fraudAnalysis;
 
         return $this;
     }

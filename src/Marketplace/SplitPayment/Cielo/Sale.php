@@ -3,9 +3,9 @@
 
 namespace FelixBraspag\Marketplace\SplitPayment\Cielo;
 
-use Cielo\API30\Ecommerce\Customer;
 use Cielo\API30\Ecommerce\Sale as SaleCielo;
 use FelixBraspag\Marketplace\SplitPayment\Cielo\Payment;
+use FelixBraspag\Marketplace\SplitPayment\Cielo\Customer;
 
 class Sale extends SaleCielo
 {
@@ -37,6 +37,16 @@ class Sale extends SaleCielo
     }
 
     /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $obj = parent::jsonSerialize();
+
+        return $obj;
+    }
+
+    /**
      * @param     $amount
      * @param int $installments
      *
@@ -49,5 +59,19 @@ class Sale extends SaleCielo
         $this->setPayment($payment);
 
         return $payment;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return Customer
+     */
+    public function customer($name)
+    {
+        $customer = new Customer($name);
+
+        $this->setCustomer($customer);
+
+        return $customer;
     }
 }

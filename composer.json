@@ -11,6 +11,7 @@
         }
     ],
     "autoload": {
+        "files": [ "lib/functions/helpers.php" ],
         "psr-4": {
             "FelixBraspag\\": "src/",
             "FelixBraspag\\Tests\\": "tests/"

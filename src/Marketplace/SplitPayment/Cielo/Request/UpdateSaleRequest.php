@@ -5,6 +5,8 @@ namespace FelixBraspag\Marketplace\SplitPayment\Cielo\Request;
 use Cielo\API30\Ecommerce\Payment;
 use Cielo\API30\Environment;
 use FelixBraspag\Marketplace\Authentication;
+use FelixBraspag\Marketplace\SplitPayment\Cielo\SplitPaymentMultiSerialize;
+use FelixBraspag\Marketplace\SplitPayment\Cielo\VoidSplitPaymentMultiSerialize;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -23,6 +25,14 @@ class UpdateSaleRequest extends AbstractRequest
 
     private $amount;
 
+    private $splitPayments;
+
+    private $voidSplitPayments;
+
+    private $isVoidTotal;
+
+    private $isVoidPartial;
+
     /**
      * CreateSaleRequest constructor.
      *
@@ -30,11 +40,14 @@ class UpdateSaleRequest extends AbstractRequest
      * @param Environment $environment
      * @param LoggerInterface|null $logger
      */
-    public function __construct(Authentication $auth, Environment $environment, LoggerInterface $logger = null)
+    public function __construct($type, Authentication $auth, Environment $environment, LoggerInterface $logger = null)
     {
         parent::__construct($auth, $logger);
 
         $this->environment = $environment;
+        $this->type        = $type;
+        $this->isVoidTotal = false;
+        $this->isVoidPartial = false;
     }
 
     /**
@@ -47,6 +60,7 @@ class UpdateSaleRequest extends AbstractRequest
     public function execute($paymentId)
     {
         $url    = $this->environment->getApiUrl() . '1/sales/' . $paymentId . '/' . $this->type;
+
         $params = [];
 
         if ($this->amount != null) {
@@ -59,7 +73,21 @@ class UpdateSaleRequest extends AbstractRequest
 
         $url .= '?' . http_build_query($params);
 
-        return $this->sendRequest('PUT', $url);
+        if($this->type == 'void'){
+            switch (true){
+                case $this->isVoidTotal:
+                    return $this->sendRequest('PUT', $url, null);
+                    break;
+                case $this->isVoidPartial:
+                    $splits = new VoidSplitPaymentMultiSerialize($this->getVoidSplitPayments());
+                    return $this->sendRequest('PUT', $url, $splits);
+                    break;
+            }
+        }
+
+        $splits = new SplitPaymentMultiSerialize($this->getSplitPayments());
+
+        return $this->sendRequest('PUT', $url, $splits);
     }
 
     /**
@@ -108,6 +136,85 @@ class UpdateSaleRequest extends AbstractRequest
     public function setAmount($amount)
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSplitPayments()
+    {
+        return $this->splitPayments;
+    }
+
+    /**
+     * @param $splitPayments
+     *
+     * @return $this
+     */
+    public function setSplitPayments($splitPayments)
+    {
+        $this->splitPayments = $splitPayments;
+
+        return $this;
+    }
+/**
+     * @return mixed
+     */
+    public function getVoidSplitPayments()
+    {
+        return $this->voidSplitPayments;
+    }
+
+    /**
+     * @param $voidSplitPayments
+     *
+     * @return $this
+     */
+    public function setVoidSplitPayments($voidSplitPayments)
+    {
+        $this->voidSplitPayments = $voidSplitPayments;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsVoidTotal()
+    {
+        return $this->isVoidTotal;
+    }
+
+    /**
+     * @param $isVoidTotal
+     *
+     * @return $this
+     */
+    public function setIsVoidTotal($isVoidTotal)
+    {
+        $this->isVoidTotal = $isVoidTotal;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsVoidPartial()
+    {
+        return $this->isVoidPartial;
+    }
+
+    /**
+     * @param $isVoidPartial
+     *
+     * @return $this
+     */
+    public function setIsVoidPartial($isVoidPartial)
+    {
+        $this->isVoidPartial = $isVoidPartial;
 
         return $this;
     }
