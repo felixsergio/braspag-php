@@ -106,12 +106,6 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
 
         curl_close($curl);
 
-        if($method == 'PUT') {
-            header('Content-Type: application/json');
-            echo $response;
-            exit;
-        }
-
         return $this->readResponse($statusCode, $response);
     }
 
