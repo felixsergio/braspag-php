@@ -2,8 +2,8 @@
 
 namespace FelixBraspag\Marketplace\SplitPayment\Cielo\Request;
 
-use Cielo\API30\Ecommerce\Request\CieloError;
-use Cielo\API30\Ecommerce\Request\CieloRequestException;
+use FelixBraspag\Marketplace\SplitPayment\Cielo\Request\CieloError;
+use FelixBraspag\Marketplace\SplitPayment\Cielo\Request\CieloRequestException;
 use FelixBraspag\Marketplace\Authentication;
 use Psr\Log\LoggerInterface;
 
