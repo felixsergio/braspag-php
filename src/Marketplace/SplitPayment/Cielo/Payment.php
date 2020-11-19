@@ -150,7 +150,7 @@ class Payment extends PaymentCielo
     /**
      * @return mixed
      */
-    public function getBody()
+    public function getReturnBody()
     {
         return $this->returnBody;
     }
