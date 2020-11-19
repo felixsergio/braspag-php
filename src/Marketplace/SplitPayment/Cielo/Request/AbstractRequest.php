@@ -17,6 +17,7 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
 
     private $auth;
     private $logger;
+    private $request;
 
 	/**
 	 * AbstractSaleRequest constructor.
@@ -28,6 +29,12 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
     {
         $this->auth = $auth;
         $this->logger = $logger;
+
+        $this->request = new \stdClass();
+        $this->request->url = null;
+        $this->request->method = null;
+        $this->request->content = null;
+        $this->request->authorization = null;
     }
 
     /**
@@ -106,6 +113,11 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
 
         curl_close($curl);
 
+        $this->request->url = $url;
+        $this->request->method = $method;
+        $this->request->content = json_encode($content);
+        $this->request->authorization = $this->auth->getTokenType() . ' ' . $this->auth->getAccessToken();
+
         return $this->readResponse($statusCode, $response);
     }
 
@@ -131,6 +143,18 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
                 $response  = json_decode($responseBody);
 
                 foreach ($response as $error) {
+
+                    if ($this->logger !== null) {
+                        $this->logger->error('Request Error Braspag', [
+                            'message' => $error->Message,
+                            'code' => $error->Code,
+                            'url' => $this->request->url,
+                            'method' => $this->request->method,
+                            'authorization' => $this->request->authorization,
+                            'content' => $this->request->content,
+                        ]);
+                    }
+
                     $cieloError = new CieloError($error->Message, $error->Code);
                     $exception  = new CieloRequestException('Request Error', $statusCode, $exception);
                     $exception->setCieloError($cieloError);
