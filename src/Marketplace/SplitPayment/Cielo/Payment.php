@@ -25,6 +25,11 @@ class Payment extends PaymentCielo
     private $fraudAnalysis;
 
     /**
+     * @var $returnBody
+     */
+    private $returnBody;
+
+    /**
      * @return array
      */
     public function jsonSerialize()
@@ -52,6 +57,8 @@ class Payment extends PaymentCielo
             $this->fraudAnalysis = new PaymentFraudAnalysis();
             $this->fraudAnalysis->populate($data->fraudAnalysis);
         }
+
+        $this->returnBody = json_encode($data);
     }
 
     /**
@@ -137,6 +144,15 @@ class Payment extends PaymentCielo
        $this->fraudAnalysis = $fraudAnalysis;
 
         return $this;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getBody()
+    {
+        return $this->returnBody;
     }
 
 }
