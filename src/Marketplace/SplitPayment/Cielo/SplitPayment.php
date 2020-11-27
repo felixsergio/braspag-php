@@ -62,11 +62,19 @@ class SplitPayment implements \JsonSerializable, CieloSerializable
      */
     public function jsonSerialize()
     {
-        return fx_array_filter_recursive(
+        $r = fx_array_filter_recursive(
             fx_cast_to_array_recursive(
                 get_object_vars($this)
             )
         );
+
+        if(isset($r['fares'])){
+            if(empty($r['fares'])){
+                unset($r['fares']);
+            }
+        }
+
+        return $r;
     }
 
     /**
