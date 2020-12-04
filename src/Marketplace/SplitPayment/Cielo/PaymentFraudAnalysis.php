@@ -104,29 +104,27 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
                     }
                     break;
                 case 'browser':
-                    if(!empty($objects['ipAddress'])) {
-                        $json[$obj]['ipAddress'] = $objects['ipAddress'];
+                    if(!empty($value->ipAddress)) {
+                        $json[$obj]['ipAddress'] = $value->ipAddress;
                     }
 
-                    if(!empty($objects['browserFingerPrint'])) {
-                        $json[$obj]['browserFingerPrint'] = $objects['browserFingerPrint'];
+                    if(!empty($value->browserFingerPrint)) {
+                        $json[$obj]['browserFingerPrint'] = $value->browserFingerPrint;
                     }
                     break;
                 case 'cart':
                 case 'merchantDefinedFields':
-                    if(!empty($objects['items'])) {
-                        $json[$obj]['items'] = $objects['items'];
+                    if(!empty($value->items)) {
+                        $json[$obj]['items'] = $value->items;
                     }
                     break;
                 case 'shipping':
-                    if(!empty($objects['addressee'])) {
-                        $json[$obj]['addressee'] = $objects['addressee'];
+                    if(!empty($value->addressee)) {
+                        $json[$obj]['addressee'] = $value->addressee;
                     }
                     break;
             }
         }
-
-
 
         if(!empty($this->provider)){
             $json['provider'] = $this->provider;
