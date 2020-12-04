@@ -32,6 +32,8 @@ class Customer extends CustomerCielo
     {
         $obj = parent::jsonSerialize();
         $obj['billingAddress'] = $this->billingAddress;
+        $obj['phone'] = $this->phone;
+        $obj['mobile'] = $this->mobile;
 
 //        return fx_array_filter_recursive(
 //            fx_cast_to_array_recursive(
