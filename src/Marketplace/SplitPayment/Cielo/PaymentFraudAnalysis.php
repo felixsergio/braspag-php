@@ -115,7 +115,8 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
                 case 'cart':
                 case 'merchantDefinedFields':
                     if(!empty($value->items)) {
-                        $json[$obj]['items'] = $value->items;
+//                        $json[$obj]['items'] = $value->items;
+                        $json[$obj] = $value->items;
                     }
                     break;
                 case 'shipping':
