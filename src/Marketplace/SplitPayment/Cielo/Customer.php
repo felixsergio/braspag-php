@@ -12,6 +12,8 @@ class Customer extends CustomerCielo
      * @var array $billingAddress
      */
     private $billingAddress;
+    private $phone;
+    private $mobile;
 
     /**
      * @param \stdClass $data
@@ -19,6 +21,8 @@ class Customer extends CustomerCielo
     public function populate(\stdClass $data)
     {
         $this->billingAddress    = $data->billingAddress ?? null;
+        $this->phone    = $data->phone ?? null;
+        $this->mobile    = $data->mobile ?? null;
     }
 
     /**
@@ -66,6 +70,46 @@ class Customer extends CustomerCielo
     public function setBillingAddress($billingAddress)
     {
         $this->billingAddress = $billingAddress;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param $address
+     *
+     * @return $this
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMobile()
+    {
+        return $this->mobile;
+    }
+
+    /**
+     * @param $address
+     *
+     * @return $this
+     */
+    public function setMobile($mobile)
+    {
+        $this->mobile = $mobile;
 
         return $this;
     }
