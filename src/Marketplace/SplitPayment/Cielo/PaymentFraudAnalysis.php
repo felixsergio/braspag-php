@@ -48,6 +48,8 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
         $this->browser->browserFingerPrint = null;
 
         $this->cart = new \stdClass();
+        $this->cart->isgift = false;
+        $this->cart->returnsaccepted = false;
         $this->cart->items = null;
 
         $this->merchantDefinedFields = new \stdClass();
@@ -55,6 +57,7 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
 
         $this->shipping = new \stdClass();
         $this->shipping->addressee = null;
+        $this->shipping->phone = null;
     }
 
     /**
@@ -81,8 +84,11 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
         $this->browser->ipAddress           = $data->browser->ipAddress ?? null;
         $this->browser->browserFingerPrint  = $data->browser->browserFingerPrint ?? null;
         $this->cart->items                  = $data->cart->items ?? null;
+        $this->cart->returnsaccepted        = $data->cart->returnsaccepted ?? false;
+        $this->cart->isgift                 = $data->cart->isgift ?? false;
         $this->merchantDefinedFields->items = $data->merchantDefinedFields->items ?? null;
         $this->shipping->addressee          = $data->shipping->addressee ?? null;
+        $this->shipping->phone              = $data->shipping->phone ?? null;
     }
 
     /**
@@ -113,6 +119,15 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
                     }
                     break;
                 case 'cart':
+                    $json[$obj]['isgift'] = $value->isgift;
+
+                    $json[$obj]['returnsaccepted'] = $value->returnsaccepted;
+
+                    if(!empty($value->items)) {
+                        $json[$obj]['items'] = $value->items;
+//                        $json[$obj] = $value->items;
+                    }
+                    break;
                 case 'merchantDefinedFields':
                     if(!empty($value->items)) {
 //                        $json[$obj]['items'] = $value->items;
@@ -123,21 +138,17 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
                     if(!empty($value->addressee)) {
                         $json[$obj]['addressee'] = $value->addressee;
                     }
+                    if(!empty($value->phone)) {
+                        $json[$obj]['phone'] = $value->phone;
+                    }
                     break;
             }
         }
 
-        if(!empty($this->provider)){
-            $json['provider'] = $this->provider;
-        }
-        if(!empty($this->shipping->addressee )){
-            $json['shipping']['addressee'] = $this->shipping->addressee ;
-        }
-
         return $json;
 
-        get_object_vars($this);
-        return get_object_vars($this);
+//        get_object_vars($this);
+//        return get_object_vars($this);
     }
 
     /**
@@ -221,6 +232,30 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
     }
 
     /**
+     * @param $returnsaccepted
+     *
+     * @return $this
+     */
+    public function setCartReturnsAccepted($returnsaccepted)
+    {
+        $this->cart->returnsaccepted = $returnsaccepted;
+
+        return $this;
+    }
+
+    /**
+     * @param $isgift
+     *
+     * @return $this
+     */
+    public function setCartIsGift($isgift)
+    {
+        $this->cart->isgift = $isgift;
+
+        return $this;
+    }
+
+    /**
      * @param array $items
      *
      * @return $this
@@ -268,6 +303,18 @@ class PaymentFraudAnalysis implements \JsonSerializable, CieloSerializable
     public function setShippingAddressee($addressee)
     {
         $this->shipping->addressee = $addressee;
+
+        return $this;
+    }
+
+    /**
+     * @param $phone
+     *
+     * @return $this
+     */
+    public function setShippingPhone($phone)
+    {
+        $this->shipping->phone = $phone;
 
         return $this;
     }
