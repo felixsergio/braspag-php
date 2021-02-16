@@ -82,7 +82,7 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
             $this->logger->debug('Requisição', [
                     sprintf('%s %s', $method, $url),
                     $headers,
-                    json_decode($content)
+                    json_encode($content)
                 ]
             );
         }
