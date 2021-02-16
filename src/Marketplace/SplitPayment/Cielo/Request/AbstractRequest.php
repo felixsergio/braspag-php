@@ -6,6 +6,7 @@ use FelixBraspag\Marketplace\SplitPayment\Cielo\Request\CieloError;
 use FelixBraspag\Marketplace\SplitPayment\Cielo\Request\CieloRequestException;
 use FelixBraspag\Marketplace\Authentication;
 use Psr\Log\LoggerInterface;
+use FelixBraspag\Marketplace\Logger;
 
 /**
  * Class AbstractSaleRequest
@@ -28,7 +29,8 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
     public function __construct(Authentication $auth, LoggerInterface $logger = null)
     {
         $this->auth = $auth;
-        $this->logger = $logger;
+//        $this->logger = $logger;
+        $this->logger = new Logger();
 
         $this->request = new \stdClass();
         $this->request->url = null;
