@@ -30,7 +30,8 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
     {
         $this->auth = $auth;
 //        $this->logger = $logger;
-        $this->logger = new Logger();
+        $logger = new Logger();
+        $this->logger = $logger->execute();
 
         $this->request = new \stdClass();
         $this->request->url = null;
