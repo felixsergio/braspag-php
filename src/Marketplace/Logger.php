@@ -20,7 +20,7 @@ class Logger extends MonologLogger
      */
     public function __construct($channel = 'main')
     {
-        if(getenv('LOGGI_PHP_LOGFILE')) {
+        if(getenv('BRASPAG_PHP_LOGFILE')) {
             $this->monolog = new MonologLogger($channel);
             $this->monolog->pushHandler(new StreamHandler(getenv('BRASPAG_PHP_LOGFILE'), MonologLogger::DEBUG));
 
