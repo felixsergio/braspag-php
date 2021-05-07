@@ -133,10 +133,12 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
                 $exception = null;
                 $response  = json_decode($responseBody);
 
-                foreach ($response as $error) {
-                    $cieloError = new CieloError($error->Message, $error->Code);
-                    $exception  = new CieloRequestException('Request Error', $statusCode, $exception);
-                    $exception->setCieloError($cieloError);
+                if ($response->Errors ?? false) {
+                    foreach ($response->Errors as $error) {
+                        $cieloError = new CieloError($error->Message ?? null, $error->Code ?? null);
+                        $exception  = new CieloRequestException('Request Error', $statusCode, $exception);
+                        $exception->setCieloError($cieloError);
+                    }
                 }
 
                 throw $exception;
