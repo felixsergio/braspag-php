@@ -88,10 +88,14 @@ abstract class AbstractRequest extends \Cielo\API30\Ecommerce\Request\AbstractRe
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
         if ($this->logger !== null) {
+            $log = preg_replace('/("cardnumber"):([0-9]{6})[0-9]+([0-9]{4})/i', '$1:"************$3"', json_encode($content));
+            $log = preg_replace('/("securityCode"):([0-9]{3})/i', '$1:"***"', $log);
+            $log = json_decode($log);
+
             $this->logger->debug('Requisição', [
                     sprintf('%s %s', $method, $url),
                     $headers,
-                    json_decode(preg_replace('/("cardnumber"):"([^"]{6})[^"]+([^"]{4})"/i', '$1:"$2******$3"', json_encode($content)))
+                    $log
                 ]
             );
         }
